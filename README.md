@@ -12,13 +12,13 @@ This project involves the development of a Node.js and Express-based API for ret
 Included in report.pdf
 
 # Testing and Limitations
-All endpoints are thoroughly tested using tools like Insomnia/Postman.
-Common edge cases and error conditions (e.g., invalid parameters, authentication failures) are handled robustly.
-Reliance on the external OMDB API for additional data introduces some dependency risks.
+- All endpoints are thoroughly tested using Insomnia.
+- Common edge cases and error conditions (e.g., invalid parameters, authentication failures) are handled robustly.
+- Reliance on the external OMDB API for additional data introduces some dependency risks.
 
 # Security Features
-HTTPS with TLS: Self-signed certificate used for development.
-Environment Variables: Secure storage for sensitive information.
-Helmet Module: Protects against common vulnerabilities.
-JWT Authentication: Secure access to protected endpoints.
-Bcrypt: Passwords are hashed and salted before storage.
+- HTTPS with TLS: Self-signed certificate used for development.
+- Environment Variables: Secure storage for sensitive information.
+- Helmet Module: Protects against common vulnerabilities.
+- JWT Authentication: Secure access to protected endpoints.
+- Bcrypt: Passwords are hashed and salted before storage.
