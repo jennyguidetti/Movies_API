@@ -1,0 +1,985 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Movie Information API",
+        "description": "This API exposes a small number of REST endpoints which implement CRUD operations on a database containing publicly available data from the Internet Movie Database. This API provides information on movies published from the year 1973. The API endpoints and their usage are described in detail below.",
+        "version": "1.0.0",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "apiteam@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://localhost:3000/"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/movies/search": {
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Search for movies by title",
+                "description": "Returns a list of movie data. The list is arranged by imdbId, in ascending order.",
+                "operationId": "listMoviesByTitle",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "The primary title of the movie.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "The year of initial release of the movie",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of objects containing Title, Year, imdbID, and Type properties. The results are limited to 100 per page. An example of one object in the array is shown below.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "Title": {
+                                                        "type": "string",
+                                                        "example": "Star Trek: First Contact"
+                                                    },
+                                                    "Year": {
+                                                        "type": "string",
+                                                        "example": "1996"
+                                                    },
+                                                    "imdbID": {
+                                                        "type": "string",
+                                                        "example": "tt0117731"
+                                                    },
+                                                    "Type": {
+                                                        "type": "string",
+                                                        "example": "movie"
+                                                    }
+                                                }
+                                            } 
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total": {
+                                                    "type": "number",
+                                                    "example": 6
+                                                },
+                                                "lastPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "perPage": {
+                                                    "type": "number",
+                                                    "example": 100
+                                                },
+                                                "currentPage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "from": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                },
+                                                "to": {
+                                                    "type": "number",
+                                                    "example": 6
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "Title": "Star Trek: First Contact",
+                                            "Year": "1996",
+                                            "imdbID": "tt0117731",
+                                            "Type": "movie"
+                                        }
+                                    ],
+                                    "pagination": {
+                                        "total": 6,
+                                        "lastPage": 1,
+                                        "perPage": 100,
+                                        "currentPage": 1,
+                                        "from": 0,
+                                        "to": 6
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameter. Click on 'Schema' below to see the possible error responses.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid year format. Format must be yyyy."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid query parameters. Only year, title and page are permitted."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Error": {
+                                    "type": "string",
+                                    "enum": [
+                                        "true",
+                                        "false"
+                                    ]
+                                },
+                                "Message": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Success",
+                                        "Failure"
+                                    ]
+                                },
+                                "City": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "district": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No results found. Click on 'Schema' below to see the possible error responses.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Requested page does not exist."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "No results found for the specified title and year."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "No results found for the specified title."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve movie data from database."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/data/{imdbID}": {
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get data for a movie by imdbID",
+                "description": "Returns movie data for specified imdbID including the genre, director and writer.",
+                "operationId": "getMovieDataByImdbID",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "imdbID",
+                        "in": "path",
+                        "description": "The imdbID of the movie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An object containing the data for the movie.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Title": {
+                                            "type": "string",
+                                            "example": "Star Trek: First Contact"
+                                        },
+                                        "Year": {
+                                            "type": "string",
+                                            "example": "1996"
+                                        },
+                                        "Runtime": {
+                                            "type": "string",
+                                            "example": "111 min"
+                                        },
+                                        "Genre": {
+                                            "type": "string",
+                                            "example": "Action,Adventure,Drama"
+                                        },
+                                        "Director": {
+                                            "type": "string",
+                                            "example": "Jonathan Frakes"
+                                        },
+                                        "Writer": {
+                                            "type": "string",
+                                            "example": "Gene Roddenberry,Rick Berman,Brannon Braga,Ronald D. Moore"
+                                        },
+                                        "Actors": {
+                                            "type": "string",
+                                            "example": "Patrick Stewart,Jonathan Frakes,Brent Spiner,LeVar Burton"
+                                        },
+                                        "Ratings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "Source": {
+                                                        "type": "string",
+                                                        "example": "Internet Movie Database"
+                                                    },
+                                                    "Value": {
+                                                        "type": "string",
+                                                        "example": "7.6/10"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } 
+                    },
+                    "400": {
+                        "description": "Invalid query parameters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid query parameters. Query parameters are not permitted."
+                                        }
+                                    }
+                                }
+                            }
+                        } 
+                    },
+                    "500": {
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error retrieving movie data."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/posters/{imdbID}": {
+            "get": {
+                "tags": [
+                    "Posters"
+                ],
+                "summary": "Get the poster for a movie by imdbID",
+                "description": "Returns an image of the requested movie poster for the specified imdbID",
+                "operationId": "getPosterByImdbID",
+                "produces": [
+                    "image/png"
+                ],
+                "parameters": [
+                    {
+                        "name": "imdbID",
+                        "in": "path",
+                        "description": "The imdbID of the movie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested poster",
+                        "content": {
+                            "image/png": {}
+                        } 
+                    },
+                    "400": {
+                        "description": "Invalid query parameters. Click on 'Schema' below to see the possible error responses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid query parameters: year. Query parameters are not permitted."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "No poster result for the imdbID, ensure valid ID"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        } 
+                    },
+                    "401": {
+                        "description": "Unauthorized. Click on 'Schema' below to see the possible error responses.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Authorization header ('Bearer token') not found."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "JWT token has expired."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid JWT token."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        } 
+                    },
+                    "500": {
+                        "description": "The requested poster could not be found, or failed to read from the disk",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ENOENT: no such file or directory, open 'res/posters/notExist_mike@gmail.com.png'"
+                                        }
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/posters/add/{imdbID}": {
+            "post": {
+                "tags": [
+                    "Posters"
+                ],
+                "summary": "Upload a poster for a movie",
+                "description": "Upload an image of a movie poster for the specified imdbID",
+                "operationId": "uploadPoster",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "imdbID",
+                        "in": "path",
+                        "description": "The imdbID of the movie",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "image/png": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The requested poster",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Poster uploaded successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters. Click on 'Schema' below to see the possible error responses.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid query parameters: year. Query parameters are not permitted."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "You must supply an imdbID and poster image/png file"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Poster already exists for the specified imdbID"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        } 
+                    },
+                    "401": {
+                        "description": "Unauthorized. Click on 'Schema' below to see the possible error responses.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Authorization header ('Bearer token') not found."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "JWT token has expired."
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "error": {
+                                                    "type": "boolean",
+                                                    "example": "true"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid JWT token."
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        } 
+                    },
+                    "500": {
+                        "description": "The poster failed to write to the disk",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ENOENT: no such file or directory, open 'res/posters/notExist_mike@gmail.com.png'"
+                                        }
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Create an account",
+                "description": "Creates a new user account. A request body containing the user to be registered must be sent.",
+                "operationId": "registerUser",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "An object containing the email and password of the user to be registered.",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "mike@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User created"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Request body incomplete, both email and password are required"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "User already exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User already exists"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unable to create user, error with database"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log in to account",
+                "description": "Log in to an existing user account. A request body containing the user credentials must be sent.",
+                "operationId": "loginUser",
+                "produces": [
+                    "application/json"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "The credentials of the user to log in.",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "mike@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Log in successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "ajsonwebtoken"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "expires_in": {
+                                            "type": "number",
+                                            "example": 86400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid log in request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Request body incomplete, both email and password are required"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Log in failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Incorrect email or password"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unable to log in, error with database"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
