@@ -3,7 +3,7 @@
 ## Project Overview
 This project involves the development of a Node.js and Express-based API for retrieving and managing movie data stored in a MySQL database. The API is designed to implement RESTful principles and secure data handling practices. It provides functionalities such as searching for movies, retrieving detailed movie information, user authentication, and managing movie posters.
 
-![main page](./public/images/swagger_main.png)
+![main page](./public/images/main_page.png)
 
 ## Features
 1. Movie Data Retrieval: Fetch movies by title, year, and other attributes.
