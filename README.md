@@ -157,3 +157,24 @@ other parameters are allowed)
 - Helmet Module: Protects against common vulnerabilities.
 - JWT Authentication: Secure access to protected endpoints.
 - Bcrypt: Passwords are hashed and salted before storage.
+
+## Response Codes
+Documentation of possible response codes for each endpoint
+
+Get movie by title
+![response codes get movie by title](./public/images/search_responses.png)
+
+Get movie by imdb ID
+![response codes get movie by imdb ID](./public/images/imdb_responses.png)
+
+Get poster by imdb ID
+![response codes get poster by imdb ID](./public/images/get_posters_responses.png)
+
+Upload poster 
+![response codes upload poster](./public/images/post_posters_responses.png)
+
+Register user
+![response codes register user](./public/images/register_responses.png)
+
+Login to account
+![response codes login](./public/images/login_responses.png)
